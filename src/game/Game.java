@@ -1,6 +1,7 @@
 package game;
 
 import display.Display;
+import gfx.Assets;
 import gfx.ImageLoader;
 import gfx.SpriteSheet;
 
@@ -18,11 +19,10 @@ public class Game implements Runnable{
     private BufferStrategy bs;
     private Graphics g;
     private SpriteSheet sh;
+    private InputHandler ih;
 
-    private final int w = 125;
-    private final int h = 150;
-    private int i = 0;
-    private int j = 0;
+    private Player player;
+    private Rectangle bottomFloor;
 
     public Game(String title, int width, int height) {
         this.title = title;
@@ -34,18 +34,20 @@ public class Game implements Runnable{
 
     private void init() {
         this.display = new Display(title, width, height);
+        this.ih = new InputHandler(this.display);
         this.sh = new SpriteSheet(ImageLoader.load("/images/player.png"));
+        Assets.init();
+
+        this.player = new Player(100, 200, 125, 150, "Kaval");
+        this.bottomFloor = new Rectangle(0, 420, this.width, 100);
+
     }
 
     private void tick(){
-            i++;
-            if (i >= 7) {
-                i = 0;
-                j++;
-            }
-            if (j >= 4) {
-                j = 0;
-            }
+        this.player.tick();
+        if (this.player.intersects(bottomFloor)) {
+            this.player.setGravity(0);
+        }
     }
 
     private void render() {
@@ -56,10 +58,19 @@ public class Game implements Runnable{
             return;
         }
         this.g = this.bs.getDrawGraphics();
-        this.g.clearRect(0,0,this.width,this.height);
+        this.g.clearRect(0,0,this.width,this.height); //clearig thhe canvas
         //DRAWING
         this.g.drawImage(ImageLoader.load("/images/bg.png"), 0, 0, null);
-        this.g.drawImage(this.sh.crop(0+this.i*this.w, 0+this.j*this.h, this.w, this.h), 100, 300, null);
+//        this.g.fillRect(this.bottomFloor.x,
+//                        this.bottomFloor.y,
+//                        this.bottomFloor.width,
+//                        this.bottomFloor.height);
+
+        this.player.render(g);
+        this.g.drawRect(this.player.getBoundingBox().x,
+                        this.player.getBoundingBox().y,
+                        this.player.getBoundingBox().width,
+                        this.player.getBoundingBox().height);
 
         //END OF DRAWING
         this.bs.show();
@@ -70,9 +81,22 @@ public class Game implements Runnable{
     public void run() {
         init();
 
+        int fps = 100;
+        double ticksPerFrame = 1000000000.0/fps;
+        double delta = 0;
+        long now;
+        long lastTimeTicked = System.nanoTime();
+
         while (isRunning){
-            tick();
-            render();
+            now = System.nanoTime();
+            delta+= (now - lastTimeTicked) / ticksPerFrame;
+            lastTimeTicked = now;
+
+            if (delta>=1) {
+                tick();
+                render();
+                delta--;
+            }
         }
         this.stop();
     }
