@@ -46,7 +46,7 @@ public class Player {
         this.name = name;
 
 
-        this.gravity = 4;
+        this.gravity = 5;
         this.velocity = 10;
         this.jumpingVelocity = 20;
         this.health = 100;
@@ -58,22 +58,17 @@ public class Player {
     }
 
     public void tick() {
-        this.boundingBox.setBounds(this.x+20,
-                                    this.y+10,
-                                    this.width-20,
-                                    this.height-20);
-        this.y+=this.gravity;
 
         if(hasJumped){
             this.y -= this.jumpingVelocity;
-            this.jumpingVelocity -= 2;
+            this.jumpingVelocity -= 1.5;
         }
 
         if (this.jumpingVelocity <= -20){
             hasJumped = false;
             this.jumpingVelocity = 20;
-            gravity = 4;
-            System.out.println("Landed jump");
+            gravity = 5;
+            System.out.println("Landed");
         }
 
 //        if (isMovingDown) {
@@ -95,15 +90,22 @@ public class Player {
             if (j >= 4) {
                 j = 0;
             }
+
+        this.boundingBox.setBounds(this.x+20,
+                this.y+10,
+                this.width-20,
+                this.height-20);
+        this.y+=this.gravity;
     }
 
     public void render(Graphics g) {
-        //g.drawImage(this.sh.crop(0+this.i*this.w, 0+this.j*this.h, this.w, this.h), 100, 300, null); //static player
-        if(isIdle){
-            g.drawImage(this.sh.crop(0 + 2 * this.w, 0 + 1 * this.h, this.w, this.h), this.x, this.y, null);
-        } else {
-            g.drawImage(this.sh.crop(0 + this.i * this.w, 0 + this.j * this.h, this.w, this.h), this.x, this.y, null);
-        }
+        g.drawImage(this.sh.crop(0 + this.i * this.w, 0 + this.j  *this.h, this.w, this.h), 100, this.y, null);//static player
+
+// if(isIdle){
+//            g.drawImage(this.sh.crop(0 + 2 * this.w, 0 + 1 * this.h, this.w, this.h), this.x, this.y, null);
+//        } else {
+//            g.drawImage(this.sh.crop(0 + this.i * this.w, 0 + this.j * this.h, this.w, this.h), this.x, this.y, null);
+//        }
         //allowing the player to be controlled with keyboard
     }
 

@@ -9,7 +9,11 @@ import java.awt.*;
 import java.awt.image.BufferStrategy;
 
 public class Game implements Runnable{
-    private  String title;
+
+    private static final int BACKGROUND_WIDTH = 1024;
+    private static final int SPEED_FACTOR = 15;
+
+    private String title;
     private int width, height;
 
     public Thread thread;
@@ -18,11 +22,14 @@ public class Game implements Runnable{
     private Display display;
     private BufferStrategy bs;
     private Graphics g;
+
     private SpriteSheet sh;
     private InputHandler ih;
 
+
     private Player player;
     private Rectangle bottomFloor;
+    private double backgroundX = 0;
 
     public Game(String title, int width, int height) {
         this.title = title;
@@ -38,15 +45,21 @@ public class Game implements Runnable{
         this.sh = new SpriteSheet(ImageLoader.load("/images/player.png"));
         Assets.init();
 
-        this.player = new Player(100, 200, 125, 150, "Kaval");
+        this.player = new Player(100, 200, 125, 150, "Stamat");
         this.bottomFloor = new Rectangle(0, 420, this.width, 100);
 
     }
 
     private void tick(){
         this.player.tick();
+
         if (this.player.intersects(bottomFloor)) {
             this.player.setGravity(0);
+        }
+        if (backgroundX <= -BACKGROUND_WIDTH){
+            backgroundX += BACKGROUND_WIDTH;
+        } else {
+            backgroundX -= SPEED_FACTOR;
         }
     }
 
@@ -60,13 +73,18 @@ public class Game implements Runnable{
         this.g = this.bs.getDrawGraphics();
         this.g.clearRect(0,0,this.width,this.height); //clearig thhe canvas
         //DRAWING
-        this.g.drawImage(ImageLoader.load("/images/bg.png"), 0, 0, null);
-//        this.g.fillRect(this.bottomFloor.x,
-//                        this.bottomFloor.y,
-//                        this.bottomFloor.width,
-//                        this.bottomFloor.height);
 
+        this.g.drawImage(ImageLoader.load("/images/bg.png"), (int) backgroundX, 0, null);
+        if (this.backgroundX <= Launcher.WINDOW_WIDTH - BACKGROUND_WIDTH) {
+            this.g.drawImage(ImageLoader.load("/images/bg.png"), (int) (BACKGROUND_WIDTH + backgroundX), 0, null);
+        }
+
+        this.g.drawRect(this.bottomFloor.x,
+                        this.bottomFloor.y,
+                        this.bottomFloor.width,
+                        this.bottomFloor.height);
         this.player.render(g);
+
         this.g.drawRect(this.player.getBoundingBox().x,
                         this.player.getBoundingBox().y,
                         this.player.getBoundingBox().width,
@@ -81,7 +99,7 @@ public class Game implements Runnable{
     public void run() {
         init();
 
-        int fps = 100;
+        int fps = 5000;
         double ticksPerFrame = 1000000000.0/fps;
         double delta = 0;
         long now;
