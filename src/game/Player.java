@@ -70,6 +70,9 @@ public class Player {
             gravity = 5;
             System.out.println("Landed");
         }
+        if (this.y > 300){
+            this.y = 300;
+        }
 
 //        if (isMovingDown) {
 //            this.y += this.velocity;
@@ -77,11 +80,11 @@ public class Player {
 //            this.y -= this.velocity;
 //        }
 
-        if (isMovingRight) {
-            this.x += this.velocity;
-        } else if (isMovingLeft) {
-            this.x -= this.velocity;
-        }
+//        if (isMovingRight) {
+//            this.x += this.velocity;
+//        } else if (isMovingLeft) {
+//            this.x -= this.velocity;
+//        }
             i++;
             if (i >= 7) {
                 i = 0;
@@ -91,11 +94,12 @@ public class Player {
                 j = 0;
             }
 
-        this.boundingBox.setBounds(this.x+20,
+        this.boundingBox.setBounds(
+                this.x+20,
                 this.y+10,
                 this.width-20,
                 this.height-20);
-        this.y+=this.gravity;
+                this.y+=this.gravity;
     }
 
     public void render(Graphics g) {

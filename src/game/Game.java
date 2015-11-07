@@ -45,7 +45,7 @@ public class Game implements Runnable{
         this.sh = new SpriteSheet(ImageLoader.load("/images/player.png"));
         Assets.init();
 
-        this.player = new Player(100, 200, 125, 150, "Stamat");
+        this.player = new Player(100, 260, 125, 150, "Stamat");
         this.bottomFloor = new Rectangle(0, 420, this.width, 100);
 
     }
@@ -78,12 +78,12 @@ public class Game implements Runnable{
         if (this.backgroundX <= Launcher.WINDOW_WIDTH - BACKGROUND_WIDTH) {
             this.g.drawImage(ImageLoader.load("/images/bg.png"), (int) (BACKGROUND_WIDTH + backgroundX), 0, null);
         }
-
+        this.player.render(g);
         this.g.drawRect(this.bottomFloor.x,
                         this.bottomFloor.y,
                         this.bottomFloor.width,
                         this.bottomFloor.height);
-        this.player.render(g);
+
 
         this.g.drawRect(this.player.getBoundingBox().x,
                         this.player.getBoundingBox().y,
@@ -99,7 +99,7 @@ public class Game implements Runnable{
     public void run() {
         init();
 
-        int fps = 5000;
+        int fps = 500000000;
         double ticksPerFrame = 1000000000.0/fps;
         double delta = 0;
         long now;
