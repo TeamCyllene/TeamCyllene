@@ -1,8 +1,8 @@
 package gfx;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
+        import javax.imageio.ImageIO;
+        import java.awt.image.BufferedImage;
+        import java.io.IOException;
 
 public class ImageLoader {
     public static BufferedImage load (String path){
