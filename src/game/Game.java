@@ -74,9 +74,9 @@ public class Game implements Runnable{
         this.g.clearRect(0,0,this.width,this.height); //clearig thhe canvas
         //DRAWING
 
-        this.g.drawImage(ImageLoader.load("/images/bg.png"), (int) backgroundX, 0, null);
+        this.g.drawImage(Assets.background, (int) backgroundX, 0, null);
         if (this.backgroundX <= Launcher.WINDOW_WIDTH - BACKGROUND_WIDTH) {
-            this.g.drawImage(ImageLoader.load("/images/bg.png"), (int) (BACKGROUND_WIDTH + backgroundX), 0, null);
+            this.g.drawImage(Assets.background, (int) (BACKGROUND_WIDTH + backgroundX), 0, null);
         }
         this.player.render(g);
         this.g.drawRect(this.bottomFloor.x,
@@ -99,7 +99,7 @@ public class Game implements Runnable{
     public void run() {
         init();
 
-        int fps = 500000000;
+        int fps = 50;
         double ticksPerFrame = 1000000000.0/fps;
         double delta = 0;
         long now;
