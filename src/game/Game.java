@@ -7,15 +7,15 @@ import gfx.SpriteSheet;
 
 import java.awt.*;
 import java.awt.image.BufferStrategy;
-import java.security.PrivateKey;
 
 public class Game implements Runnable{
 
     private static final int BACKGROUND_WIDTH = 1024;
-    public static final int SPEED_FACTOR = 15;
+    public static int speedFactor = 13;
 
     private String title;
     private int width, height;
+    private String scoreCount = "0";
 
     public Thread thread;
     private boolean isRunning;
@@ -27,12 +27,12 @@ public class Game implements Runnable{
     private SpriteSheet sh;
     private InputHandler ih;
 
-
     private Player player;
     private Rectangle bottomFloor;
-    private Enemy enemy;
-    private Enemy secondEnemy;
-    private Enemy thirdEnemy;
+    private Grass enemy;
+    private Grass secondEnemy;
+    private Grass thirdEnemy;
+    private Tree firstTree;
     private double backgroundX = 0;
 
     public Game(String title, int width, int height) {
@@ -48,9 +48,11 @@ public class Game implements Runnable{
         this.sh = new SpriteSheet(ImageLoader.load("/images/player.png"));
 
         this.player = new Player(100, 260, 125, 150, "Stamat");
-        this.enemy = new Enemy(2000, 320, 80, 100, Assets.enemy);
-        this.secondEnemy = new Enemy(2500, 320, 80, 100, Assets.enemy);
-        this.thirdEnemy = new Enemy(2570, 320, 80, 100, Assets.enemy);
+        this.enemy = new Grass(2000, 320, 80, 100, Assets.enemy);
+        this.secondEnemy = new Grass(2500, 320, 80, 100, Assets.enemy);
+        this.thirdEnemy = new Grass(2570, 320, 80, 100, Assets.enemy);
+        this.firstTree = new Tree (3000, 300, 80, 120, Assets.treeEnemy);
+
         this.bottomFloor = new Rectangle(0, 420, this.width, 100);
         Assets.init();
 
@@ -59,6 +61,7 @@ public class Game implements Runnable{
     private void tick(){
         this.player.tick();
         this.enemy.tick();
+        this.firstTree.tick();
         this.secondEnemy.tick();
         this.thirdEnemy.tick();
         if (this.player.intersectsWithFloor(bottomFloor)) {
@@ -76,11 +79,17 @@ public class Game implements Runnable{
             System.out.println("ENEMYYYYY!11!");
             isRunning = false;
         }
+        if (this.player.getBoundingBox().intersects(firstTree.getEnemy())){
+            System.out.println("ENEMYYYYY!11!");
+            isRunning = false;
+        }
         if (backgroundX <= -BACKGROUND_WIDTH){
             backgroundX += BACKGROUND_WIDTH;
         } else {
-            backgroundX -= SPEED_FACTOR;
+            backgroundX -= speedFactor;
         }
+        int scoreNumber = Integer.parseInt(scoreCount) + speedFactor;
+        scoreCount = ""+scoreNumber;
     }
 
     private void render() {
@@ -104,6 +113,7 @@ public class Game implements Runnable{
         this.enemy.render(g);
         this.secondEnemy.render(g);
         this.thirdEnemy.render(g);
+        this.firstTree.render(g);
         this.g.drawRect(this.bottomFloor.x,
                         this.bottomFloor.y,
                         this.bottomFloor.width,
@@ -114,7 +124,9 @@ public class Game implements Runnable{
                         this.player.getBoundingBox().y,
                         this.player.getBoundingBox().width,
                         this.player.getBoundingBox().height);
-
+        g.setFont(new Font("TimesRoman", Font.PLAIN, 35));
+        g.drawString("Score: ", 30,30);
+        g.drawString(scoreCount,170,30);;
         //END OF DRAWING
         this.bs.show();
         this.g.dispose();
