@@ -7,11 +7,12 @@ import gfx.SpriteSheet;
 
 import java.awt.*;
 import java.awt.image.BufferStrategy;
+import java.security.PrivateKey;
 
 public class Game implements Runnable{
 
     private static final int BACKGROUND_WIDTH = 1024;
-    public static final int SPEED_FACTOR = 10;
+    public static final int SPEED_FACTOR = 15;
 
     private String title;
     private int width, height;
@@ -29,6 +30,9 @@ public class Game implements Runnable{
 
     private Player player;
     private Rectangle bottomFloor;
+    private Enemy enemy;
+    private Enemy secondEnemy;
+    private Enemy thirdEnemy;
     private double backgroundX = 0;
 
     public Game(String title, int width, int height) {
@@ -44,6 +48,9 @@ public class Game implements Runnable{
         this.sh = new SpriteSheet(ImageLoader.load("/images/player.png"));
 
         this.player = new Player(100, 260, 125, 150, "Stamat");
+        this.enemy = new Enemy(2000, 320, 80, 100, Assets.enemy);
+        this.secondEnemy = new Enemy(2500, 320, 80, 100, Assets.enemy);
+        this.thirdEnemy = new Enemy(2570, 320, 80, 100, Assets.enemy);
         this.bottomFloor = new Rectangle(0, 420, this.width, 100);
         Assets.init();
 
@@ -51,9 +58,23 @@ public class Game implements Runnable{
 
     private void tick(){
         this.player.tick();
-
+        this.enemy.tick();
+        this.secondEnemy.tick();
+        this.thirdEnemy.tick();
         if (this.player.intersectsWithFloor(bottomFloor)) {
             this.player.setGravity(0);
+        }
+        if (this.player.getBoundingBox().intersects(enemy.getEnemy())){
+            System.out.println("ENEMYYYYY!11!");
+            isRunning = false;
+        }
+        if (this.player.getBoundingBox().intersects(secondEnemy.getEnemy())){
+            System.out.println("ENEMYYYYY!11!");
+            isRunning = false;
+        }
+        if (this.player.getBoundingBox().intersects(thirdEnemy.getEnemy())){
+            System.out.println("ENEMYYYYY!11!");
+            isRunning = false;
         }
         if (backgroundX <= -BACKGROUND_WIDTH){
             backgroundX += BACKGROUND_WIDTH;
@@ -80,6 +101,9 @@ public class Game implements Runnable{
 
         //floor bounding box
         this.player.render(g);
+        this.enemy.render(g);
+        this.secondEnemy.render(g);
+        this.thirdEnemy.render(g);
         this.g.drawRect(this.bottomFloor.x,
                         this.bottomFloor.y,
                         this.bottomFloor.width,

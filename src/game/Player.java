@@ -18,11 +18,6 @@ public class Player {
 
 
     public static boolean
-//            isMovingUp = false,
-//            isMovingDown = false,
-//            isMovingLeft = false,
-//            isMovingRight = false,
-//            isIdle = true,
             hasDropped = false,
             hasJumped = false;
 
@@ -45,11 +40,15 @@ public class Player {
 
         this.gravity = 5;
         this.velocity = 10;
-        this.jumpingVelocity = 20;
+        this.jumpingVelocity = 22;
         this.health = 100;
         this.sh = new SpriteSheet(ImageLoader.load("/images/player.png"));
 
-        this.boundingBox = new Rectangle(this.x + 20,this.y + 10,this.width - 20, this.height - 20);
+        this.boundingBox = new Rectangle(
+                this.x + 15,
+                this.y + 10,
+                this.width - 35,
+                this.height - 20);
 
         this.hasJumped = false;
         this.hasDropped = false;
@@ -67,9 +66,9 @@ public class Player {
             this.jumpingVelocity = -50;
         }
 
-        if (this.jumpingVelocity <= -20){
+        if (this.jumpingVelocity <= -22){
             hasJumped = false;
-            this.jumpingVelocity = 20;
+            this.jumpingVelocity = 22;
             gravity = 5;
             System.out.println("Landed");
         }
@@ -78,57 +77,33 @@ public class Player {
             this.y = 260;
         }
 
-//        if (isMovingDown) {
-//            this.y += this.velocity;
-//        } else if (isMovingUp) {
-//            this.y -= this.velocity;
-//        }
 
-//        if (isMovingRight) {
-//            this.x += this.velocity;
-//        } else if (isMovingLeft) {
-//            this.x -= this.velocity;
-//        }
-            i++;
-            if (i >= 7) {
-                i = 0;
-                j++;
-            }
-            if (j >= 4) {
-                j = 0;
-            }
+        i++;
+        if (i >= 7) {
+            i = 0;
+            j++;
+        }
+        if (j >= 4) {
+            j = 0;
+        }
 
         this.boundingBox.setBounds(
-                this.x+20,
+                this.x+15,
                 this.y+10,
-                this.width-20,
+                this.width-35,
                 this.height-20);
                 this.y+=this.gravity;
     }
 
     public void render(Graphics g) {
         g.drawImage(this.sh.crop(0 + this.i * this.width, 0 + this.j  *this.height, this.width, this.height), 100, this.y, null);//static player
-
-//          if(isIdle){
-//            g.drawImage(this.sh.crop(0 + 2 * this.w, 0 + 1 * this.h, this.w, this.h), this.x, this.y, null);
-//        } else {
-//            g.drawImage(this.sh.crop(0 + this.i * this.w, 0 + this.j * this.h, this.w, this.h), this.x, this.y, null);
-//        }
-        //allowing the player to be controlled with keyboard
     }
 
-    public boolean intersectsWithFloor(Rectangle enemy){
+    public boolean intersectsWithFloor(Rectangle floor){
         //return this.boundingBox.contains(rect) || rect.contains(this.boundingBox);
-        return enemy.x >= this.boundingBox.x &&
-                enemy.x <= this.boundingBox.x + this.boundingBox.width ||
-                enemy.y >= this.boundingBox.y &&
-                        enemy.y <= this.boundingBox.y + this.boundingBox.height;
-    }
-    public boolean intersectsEnemy(Rectangle rect){
-        //return this.boundingBox.contains(rect) || rect.contains(this.boundingBox);
-        return rect.x >= this.boundingBox.x &&
-                rect.x <= this.boundingBox.x + this.boundingBox.width ||
-                rect.y >= this.boundingBox.y &&
-                        rect.y <= this.boundingBox.y + this.boundingBox.height;
+        return floor.x >= this.boundingBox.x &&
+                floor.x <= this.boundingBox.x + this.boundingBox.width ||
+                floor.y >= this.boundingBox.y &&
+                        floor.y <= this.boundingBox.y + this.boundingBox.height;
     }
 }

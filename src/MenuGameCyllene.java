@@ -3,6 +3,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class MenuGameCyllene {
+
     // get the screen dimensions
     private int screenWidth  = Toolkit.getDefaultToolkit().getScreenSize().width;
     private int screenHeight = Toolkit.getDefaultToolkit().getScreenSize().height;
