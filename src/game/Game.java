@@ -117,12 +117,12 @@ public class Game implements Runnable{
         }
 
         //draw the player and the objects
-        this.player.render(g);
         this.firstStamp.render(g);
         this.secondStamp.render(g);
         this.thirdStamp.render(g);
         this.firstTree.render(g);
         this.secondTree.render(g);
+        this.player.render(g);
 
         //show floor bounding box
 //        this.g.drawRect(this.bottomFloor.x,
@@ -131,10 +131,10 @@ public class Game implements Runnable{
 //                        this.bottomFloor.height);
 
         //show player bounding box
-        this.g.drawRect(this.player.getBoundingBox().x,
-                        this.player.getBoundingBox().y,
-                        this.player.getBoundingBox().width,
-                        this.player.getBoundingBox().height);
+//        this.g.drawRect(this.player.getBoundingBox().x,
+//                        this.player.getBoundingBox().y,
+//                        this.player.getBoundingBox().width,
+//                        this.player.getBoundingBox().height);
 
         //set the font and font size of the score meter
         g.setFont(new Font("TimesRoman", Font.PLAIN, 35));
@@ -156,7 +156,7 @@ public class Game implements Runnable{
         init();
 
         //calculating the fps
-        int fps = 35;
+        int fps = 33;
         double ticksPerFrame = 1000000000.0 / fps;
         double delta = 0;
         long now;

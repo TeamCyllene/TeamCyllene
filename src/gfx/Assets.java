@@ -10,6 +10,6 @@ public class Assets {
         background = ImageLoader.load("/images/bg.png");
         player = spriteSheet.crop(0, 0, 125, 150);
         enemy = ImageLoader.load("/images/stump.png");
-        treeEnemy = ImageLoader.load("/images/tree-test.png");
+        treeEnemy = ImageLoader.load("/images/fire.gif");
     }
 }
