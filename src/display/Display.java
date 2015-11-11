@@ -25,6 +25,7 @@ public class Display extends Canvas {
         this.frame.setSize(this.width,this.height);
         this.frame.setVisible(true);
         this.frame.setFocusable(true);
+        this.frame.requestFocus();
         this.frame.setResizable(false);
         this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.frame.setLocationRelativeTo(null);

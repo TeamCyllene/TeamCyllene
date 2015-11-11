@@ -16,11 +16,9 @@ public class Player {
     private int i = 0;
     private int j = 0;
 
-
     public static boolean
             hasDropped = false,
             hasJumped = false;
-
 
     public Rectangle getBoundingBox() {
         return boundingBox;
@@ -36,7 +34,6 @@ public class Player {
         this.width = width;
         this.height = height;
         this.name = name;
-
 
         this.gravity = 5;
         this.velocity = 10;
@@ -56,28 +53,30 @@ public class Player {
 
     public void tick() {
 
+        //jumping algorithm
         if(hasJumped){
             this.y -= this.jumpingVelocity;
             this.jumpingVelocity -= 1.5;
         }
-        if (hasDropped && hasJumped) {
-            this.y = 260;
-            hasDropped = false;
-            this.jumpingVelocity = -50;
-        }
+//        if (hasDropped && hasJumped) {
+//            this.y = 260;
+//            hasDropped = false;
+//            this.jumpingVelocity = -50;
+//        }
 
+        //bug fix while jumping
         if (this.jumpingVelocity <= -22){
             hasJumped = false;
             this.jumpingVelocity = 22;
             gravity = 5;
-            System.out.println("Landed");
         }
 
+        //bug fix if the player drops below the ground
         if (this.y > 300){
             this.y = 260;
         }
 
-
+        //drawing the spritesheet
         i++;
         if (i >= 7) {
             i = 0;
@@ -87,18 +86,21 @@ public class Player {
             j = 0;
         }
 
+        //setting hte bounding box of the player
         this.boundingBox.setBounds(
-                this.x+15,
-                this.y+10,
-                this.width-35,
-                this.height-20);
+                this.x + 40,
+                this.y + 10,
+                this.width - 70,
+                this.height - 25);
                 this.y+=this.gravity;
     }
 
+    //cropping the sprite sheet
     public void render(Graphics g) {
         g.drawImage(this.sh.crop(0 + this.i * this.width, 0 + this.j  *this.height, this.width, this.height), 100, this.y, null);//static player
     }
 
+    //check if the player intersects with the floor
     public boolean intersectsWithFloor(Rectangle floor){
         //return this.boundingBox.contains(rect) || rect.contains(this.boundingBox);
         return floor.x >= this.boundingBox.x &&

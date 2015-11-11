@@ -11,7 +11,7 @@ import java.awt.image.BufferStrategy;
 public class Game implements Runnable{
 
     private static final int BACKGROUND_WIDTH = 1024;
-    public static int speedFactor = 13;
+    public static final int SPEED_FACTOR = 15;
 
     private String title;
     private int width, height;
@@ -29,10 +29,8 @@ public class Game implements Runnable{
 
     private Player player;
     private Rectangle bottomFloor;
-    private Grass enemy;
-    private Grass secondEnemy;
-    private Grass thirdEnemy;
-    private Tree firstTree;
+    private Stamp firstStamp, secondStamp, thirdStamp;
+    private Tree firstTree, secondTree;
     private double backgroundX = 0;
 
     public Game(String title, int width, int height) {
@@ -41,17 +39,18 @@ public class Game implements Runnable{
         this.height = height;
         this.isRunning = false;
     }
-
+    //initializing all objects and variables
     private void init() {
         this.display = new Display(title, width, height);
         this.ih = new InputHandler(this.display);
         this.sh = new SpriteSheet(ImageLoader.load("/images/player.png"));
 
         this.player = new Player(100, 260, 125, 150, "Stamat");
-        this.enemy = new Grass(2000, 320, 80, 100, Assets.enemy);
-        this.secondEnemy = new Grass(2500, 320, 80, 100, Assets.enemy);
-        this.thirdEnemy = new Grass(2570, 320, 80, 100, Assets.enemy);
+        this.firstStamp = new Stamp(2000, 340, 80, 100, Assets.enemy);
+        this.secondStamp = new Stamp(2500, 340, 80, 100, Assets.enemy);
+        this.thirdStamp = new Stamp(2570, 340, 80, 100, Assets.enemy);
         this.firstTree = new Tree (3000, 300, 80, 120, Assets.treeEnemy);
+        this.secondTree = new Tree (3500, 300, 80, 120, Assets.treeEnemy);
 
         this.bottomFloor = new Rectangle(0, 420, this.width, 100);
         Assets.init();
@@ -59,36 +58,44 @@ public class Game implements Runnable{
     }
 
     private void tick(){
+        //update the player and the objects
         this.player.tick();
-        this.enemy.tick();
+        this.firstStamp.tick();
         this.firstTree.tick();
-        this.secondEnemy.tick();
-        this.thirdEnemy.tick();
+        this.secondStamp.tick();
+        this.thirdStamp.tick();
+        this.secondTree.tick();
+
+
+        //check all intersections
         if (this.player.intersectsWithFloor(bottomFloor)) {
             this.player.setGravity(0);
         }
-        if (this.player.getBoundingBox().intersects(enemy.getEnemy())){
-            System.out.println("ENEMYYYYY!11!");
+        if (this.player.getBoundingBox().intersects(firstStamp.getEnemy())){
             isRunning = false;
         }
-        if (this.player.getBoundingBox().intersects(secondEnemy.getEnemy())){
-            System.out.println("ENEMYYYYY!11!");
+        if (this.player.getBoundingBox().intersects(secondStamp.getEnemy())){
             isRunning = false;
         }
-        if (this.player.getBoundingBox().intersects(thirdEnemy.getEnemy())){
-            System.out.println("ENEMYYYYY!11!");
+        if (this.player.getBoundingBox().intersects(thirdStamp.getEnemy())){
             isRunning = false;
         }
         if (this.player.getBoundingBox().intersects(firstTree.getEnemy())){
-            System.out.println("ENEMYYYYY!11!");
             isRunning = false;
         }
+        if (this.player.getBoundingBox().intersects(secondTree.getEnemy())){
+            isRunning = false;
+        }
+
+        //resetting the background when it run out of screen
         if (backgroundX <= -BACKGROUND_WIDTH){
             backgroundX += BACKGROUND_WIDTH;
         } else {
-            backgroundX -= speedFactor;
+            backgroundX -= SPEED_FACTOR;
         }
-        int scoreNumber = Integer.parseInt(scoreCount) + speedFactor;
+
+        //calculating the score and updating it
+        int scoreNumber = Integer.parseInt(scoreCount) + SPEED_FACTOR;
         scoreCount = ""+scoreNumber;
     }
 
@@ -100,33 +107,45 @@ public class Game implements Runnable{
             return;
         }
         this.g = this.bs.getDrawGraphics();
-        this.g.clearRect(0,0,this.width,this.height); //clearig thhe canvas
+        this.g.clearRect(0, 0, this.width, this.height); //clearig thhe canvas
         //DRAWING
 
+        //drawing the background and repainting when it run out of screen
         this.g.drawImage(Assets.background, (int) backgroundX, 0, null);
         if (this.backgroundX <= Launcher.WINDOW_WIDTH - BACKGROUND_WIDTH) {
             this.g.drawImage(Assets.background, (int) (BACKGROUND_WIDTH + backgroundX), 0, null);
         }
 
-        //floor bounding box
+        //draw the player and the objects
         this.player.render(g);
-        this.enemy.render(g);
-        this.secondEnemy.render(g);
-        this.thirdEnemy.render(g);
+        this.firstStamp.render(g);
+        this.secondStamp.render(g);
+        this.thirdStamp.render(g);
         this.firstTree.render(g);
-        this.g.drawRect(this.bottomFloor.x,
-                        this.bottomFloor.y,
-                        this.bottomFloor.width,
-                        this.bottomFloor.height);
+        this.secondTree.render(g);
 
-        //player bounding box
+        //show floor bounding box
+//        this.g.drawRect(this.bottomFloor.x,
+//                        this.bottomFloor.y,
+//                        this.bottomFloor.width,
+//                        this.bottomFloor.height);
+
+        //show player bounding box
         this.g.drawRect(this.player.getBoundingBox().x,
                         this.player.getBoundingBox().y,
                         this.player.getBoundingBox().width,
                         this.player.getBoundingBox().height);
+
+        //set the font and font size of the score meter
         g.setFont(new Font("TimesRoman", Font.PLAIN, 35));
-        g.drawString("Score: ", 30,30);
-        g.drawString(scoreCount,170,30);;
+        //updating the score
+        if (isRunning){
+            g.drawString("Score: ", 30, 30);
+            g.drawString(scoreCount, 150, 30);;
+        } else {
+            g.drawString("Game Over! Your score is: ", 30, 30);
+            g.drawString(scoreCount, 450, 30);;
+        }
         //END OF DRAWING
         this.bs.show();
         this.g.dispose();
@@ -137,8 +156,8 @@ public class Game implements Runnable{
         init();
 
         //calculating the fps
-        int fps = 40;
-        double ticksPerFrame = 1000000000.0/fps;
+        int fps = 35;
+        double ticksPerFrame = 1000000000.0 / fps;
         double delta = 0;
         long now;
         long lastTimeTicked = System.nanoTime();
@@ -148,7 +167,7 @@ public class Game implements Runnable{
             delta+= (now - lastTimeTicked) / ticksPerFrame;
             lastTimeTicked = now;
 
-            if (delta>=1) {
+            if (delta >= 1) {
                 tick();
                 render();
                 delta--;
