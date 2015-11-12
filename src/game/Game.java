@@ -30,7 +30,7 @@ public class Game implements Runnable{
     private Player player;
     private Rectangle bottomFloor;
     private Stamp firstStamp, secondStamp, thirdStamp;
-    private Tree firstTree, secondTree;
+    private Fire firstFire, secondFirst;
     private double backgroundX = 0;
 
     public Game(String title, int width, int height) {
@@ -49,8 +49,8 @@ public class Game implements Runnable{
         this.firstStamp = new Stamp(2000, 340, 80, 100, Assets.enemy);
         this.secondStamp = new Stamp(2500, 340, 80, 100, Assets.enemy);
         this.thirdStamp = new Stamp(2570, 340, 80, 100, Assets.enemy);
-        this.firstTree = new Tree (3000, 300, 80, 120, Assets.treeEnemy);
-        this.secondTree = new Tree (3500, 300, 80, 120, Assets.treeEnemy);
+        this.firstFire = new Fire(3000, 300, 80, 120, Assets.treeEnemy);
+        this.secondFirst = new Fire(3500, 300, 80, 120, Assets.treeEnemy);
 
         this.bottomFloor = new Rectangle(0, 420, this.width, 100);
         Assets.init();
@@ -61,10 +61,10 @@ public class Game implements Runnable{
         //update the player and the objects
         this.player.tick();
         this.firstStamp.tick();
-        this.firstTree.tick();
+        this.firstFire.tick();
         this.secondStamp.tick();
         this.thirdStamp.tick();
-        this.secondTree.tick();
+        this.secondFirst.tick();
 
 
         //check all intersections
@@ -80,10 +80,10 @@ public class Game implements Runnable{
         if (this.player.getBoundingBox().intersects(thirdStamp.getEnemy())){
             isRunning = false;
         }
-        if (this.player.getBoundingBox().intersects(firstTree.getEnemy())){
+        if (this.player.getBoundingBox().intersects(firstFire.getEnemy())){
             isRunning = false;
         }
-        if (this.player.getBoundingBox().intersects(secondTree.getEnemy())){
+        if (this.player.getBoundingBox().intersects(secondFirst.getEnemy())){
             isRunning = false;
         }
 
@@ -120,8 +120,8 @@ public class Game implements Runnable{
         this.firstStamp.render(g);
         this.secondStamp.render(g);
         this.thirdStamp.render(g);
-        this.firstTree.render(g);
-        this.secondTree.render(g);
+        this.firstFire.render(g);
+        this.secondFirst.render(g);
         this.player.render(g);
 
         //show floor bounding box
@@ -156,7 +156,7 @@ public class Game implements Runnable{
         init();
 
         //calculating the fps
-        int fps = 33;
+        int fps = 35;
         double ticksPerFrame = 1000000000.0 / fps;
         double delta = 0;
         long now;
